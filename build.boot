@@ -7,6 +7,7 @@
                  [compassus                   "0.2.1"]
                  [bidi                        "2.0.12"]
                  [kibu/pushy                  "0.3.6"]
+                 [sablono                     "0.7.5"]
 
                  [com.cognitect/transit-clj   "0.8.288"        :scope "test"]
                  [com.cemerick/piggieback     "0.2.1"          :scope "test"]
@@ -37,7 +38,9 @@
     (speak)
     (less)
     (cljs :source-map true
-          :compiler-options {:parallel-build true}
+      :compiler-options {:parallel-build true
+                         :optimizations  :none
+                         :verbose        true}
           :ids #{"js/dev"})
     (sift :move {#"dev.js" "main.js"})
     (target)))

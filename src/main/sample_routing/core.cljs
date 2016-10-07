@@ -4,24 +4,16 @@
             [compassus.core :as c]
             [bidi.bidi :as bidi]
             [pushy.core :as pushy]
+            [sample-routing.home :refer [Home]]
+            [sample-routing.about :refer [About]]
             [sample-routing.parser :as parser]))
 
-(defui ^:once Home
-  static om/IQuery
-  (query [this]
-    [:app/title])
-  Object
-  (render [this]
-    (let [{:keys [app/title]} (om/props this)]
-      (dom/div nil
-        (dom/h3 nil title)
-        (dom/p nil "It works!")))))
-
 (defonce app-state
-  (atom {:app/title "Oriens"}))
+  (atom {:app/title "Das home"
+         :about/title "Yo! About what?"}))
 
 (defonce bidi-routes
-  ["/" {""      :index
+  ["/" {""      :home
         "about" :about}])
 
 (declare app)
@@ -31,7 +23,8 @@
     (partial bidi/match-route bidi-routes)))
 
 (defonce app
-  (c/application {:routes {:index (c/index-route Home)}
+  (c/application {:routes {:home (c/index-route Home)
+                           :about About}
                   :reconciler-opts {:state app-state
                                     :parser (om/parser {:read parser/read})}
                   :history {:setup    #(pushy/start! history)
