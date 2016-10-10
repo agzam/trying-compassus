@@ -4,17 +4,20 @@
             [compassus.core :as c]
             [bidi.bidi :as bidi]
             [pushy.core :as pushy]
-            [sample-routing.home :refer [Home]]
-            [sample-routing.about :refer [About]]
+            [sample-routing.colors :refer [Colors]]
+            [sample-routing.numbers :refer [Numbers]]
             [sample-routing.parser :as parser]))
 
 (defonce app-state
-  (atom {:app/title "Das home"
-         :about/title "Yo! About what?"}))
+  (atom {
+         :app/menu [{:id 0 :title "colors"}
+                    {:id 1 :title "numbers"}]
+         :colors/title "here will be colors"
+         :numbers/title "numbers are here!"}))
 
 (defonce bidi-routes
-  ["/" {""      :home
-        "about" :about}])
+  ["/" {""        :colors
+        "numbers" :numbers}])
 
 (declare app)
 
@@ -23,8 +26,8 @@
     (partial bidi/match-route bidi-routes)))
 
 (defonce app
-  (c/application {:routes {:home (c/index-route Home)
-                           :about About}
+  (c/application {:routes {:colors (c/index-route Colors)
+                           :numbers Numbers}
                   :reconciler-opts {:state app-state
                                     :parser (om/parser {:read parser/read})}
                   :history {:setup    #(pushy/start! history)
