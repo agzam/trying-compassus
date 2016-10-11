@@ -6,12 +6,12 @@
             [pushy.core :as pushy]
             [sample-routing.colors :refer [Colors]]
             [sample-routing.numbers :refer [Numbers]]
+            [sample-routing.menu :refer [Menu]]
             [sample-routing.parser :as parser]))
 
 (defonce app-state
-  (atom {
-         :app/menu [{:id 0 :title "colors"}
-                    {:id 1 :title "numbers"}]
+  (atom {:menu-items [{:id 0 :title "colors"}
+                      {:id 1 :title "numbers"}]
          :colors/title "here will be colors"
          :numbers/title "numbers are here!"}))
 
@@ -30,6 +30,7 @@
                            :numbers Numbers}
                   :reconciler-opts {:state app-state
                                     :parser (om/parser {:read parser/read})}
+                  :mixins [(c/wrap-render Menu)]
                   :history {:setup    #(pushy/start! history)
                             :teardown #(pushy/stop! history)}}))
 
