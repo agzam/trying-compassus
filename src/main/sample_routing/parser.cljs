@@ -4,9 +4,11 @@
 
 (defmulti read om/dispatch)
 
+
 (defmethod read :default
-  [{:keys [state query]} _ _]
-  {:value (select-keys @state query)})
+  [{:keys [state query]} k params]
+  (let [st @state]
+    {:value (get st k)}))
 
 (defmethod read :menu-items
   [{:keys [query state]} k _]

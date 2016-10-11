@@ -11,6 +11,11 @@
       [:ul {:list-style-type :none
             :padding-left    0}])))
 
+(defstyles tables
+  [:tbody
+   [:td {:padding "5px"
+         :border ["1px solid #cfc6c6"]}]])
+
 (defstyles menu
   [:.menu
    [:li {:display      :inline-block
@@ -21,4 +26,5 @@
 
 (defstyles combined
   base
-  menu)
+  menu
+  tables)
