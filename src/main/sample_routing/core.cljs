@@ -4,14 +4,14 @@
             [compassus.core :as c]
             [bidi.bidi :as bidi]
             [pushy.core :as pushy]
-            [sample-routing.colors :refer [Colors]]
+            [sample-routing.colors :refer [Colors ColorItem]]
             [sample-routing.numbers :refer [Numbers]]
             [sample-routing.menu :refer [Menu]]
             [sample-routing.parser :as parser]))
 
 (defonce app-state
-  (atom {:menu-items [{:id 0 :title "colors"}
-                      {:id 1 :title "numbers"}]
+  (atom {:menu-items [{:id 0 :title "colors" :url "/"}
+                      {:id 1 :title "numbers" :url "/numbers"}]
          :numbers    {:numbers/title "numbers are here!"
                       :numbers/list  [{:number-id 0 :value "afb5f6da-3d8e-49ef-993d-95e55f186fd3"}
                                       {:number-id 1 :value "bc47140c-89ad-4832-a3d7-b22a6aafde6c"}
@@ -30,19 +30,23 @@
 
 (defonce bidi-routes
   ["/" {""        :colors
-        "numbers" :numbers}])
+        "numbers" :numbers
+        ["colors/" :id] :color/by-id}])
 
 (declare app)
 
 (defonce history
-  (pushy/pushy #(c/set-route! app (:handler %))
+  (pushy/pushy (fn [{:keys [handler route-params]}]
+                 (c/set-route! app handler {:params {:route-params route-params}}))
     (partial bidi/match-route bidi-routes)))
 
 (defonce app
   (c/application {:routes {:colors (c/index-route Colors)
-                           :numbers Numbers}
+                           :numbers Numbers
+                           :color/by-id ColorItem}
                   :reconciler-opts {:state app-state
-                                    :parser (om/parser {:read parser/read})}
+                                    :parser (om/parser {:read parser/read})
+                                    :shared {:history history}}
                   :mixins [(c/wrap-render Menu)]
                   :history {:setup    #(pushy/start! history)
                             :teardown #(pushy/stop! history)}}))

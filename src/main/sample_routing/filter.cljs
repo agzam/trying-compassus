@@ -2,13 +2,22 @@
   (:require [om.next :as om       :refer-macros [defui]]
             [sablono.core         :refer-macros [html]]
             [sample-routing.utils :refer [change-route]]
-            [taoensso.timbre      :as log]))
+            [taoensso.timbre      :as log]
+            [pushy.core :as pushy]))
 
 (defui Filter
   Object
+  (initLocalState [this]
+    {:input ""})
   (render [this]
     (html [:div
-           [:input {:type "text"}]
-           [:button "Apply"]])))
+           [:input {:type "text"
+                    :on-change #(om/set-state! this {:input (.. % -target -value)})
+                    :value (om/get-state this :input)}]
+           [:button {:on-click (fn [e]
+                                 (let [{:keys [history]} (om/shared this)]
+                                   (.preventDefault e)
+                                   (pushy/set-token! history (str "/colors/" (om/get-state this :input)))))}
+            "Apply"]])))
 
 (def filter-ui (om/factory Filter))

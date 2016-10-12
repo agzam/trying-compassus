@@ -37,5 +37,5 @@
              [:table
               [:tbody
                (map #(number-item %) list)]]
-             [:a {:href "#" :on-click #(change-route this :colors %)}
+             [:a {:href "/"}
               "Go to colors page"]]))))
