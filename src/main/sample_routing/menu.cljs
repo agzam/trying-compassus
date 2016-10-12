@@ -1,7 +1,6 @@
 (ns sample-routing.menu
   (:require [om.next              :as om  :refer-macros [defui]]
             [sablono.core                 :refer-macros [html]]
-            [sample-routing.utils         :refer [change-route]]
             [taoensso.timbre      :as log]
             [compassus.core       :as c]))
 

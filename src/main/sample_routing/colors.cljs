@@ -1,7 +1,6 @@
 (ns sample-routing.colors
   (:require [om.next               :as           om :refer-macros [defui]]
             [sablono.core          :refer-macros [html]]
-            [sample-routing.utils  :refer        [change-route]]
             [sample-routing.filter :refer        [filter-ui]]
             [taoensso.timbre       :as           log]
             [compassus.core :as c]))
@@ -19,11 +18,13 @@
   (render [this]
     (let [{:keys [color-id name]} (om/props this)
           current-route (c/current-route this)]
+      (log/spy current-route)
       (condp = current-route
         :colors
         (html [:tr
+               {:on-click #(c/set-route! this :color/by-id {:params {:route-params {:id (str color-id)}}})}
                [:td color-id]
-               [:td name]])
+               [:td name] ])
 
         :color/by-id
         (html [:div

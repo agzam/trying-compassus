@@ -1,7 +1,6 @@
 (ns sample-routing.numbers
   (:require [om.next              :as           om :refer-macros [defui]]
-            [sablono.core         :refer-macros [html]]
-            [sample-routing.utils :refer        [change-route]]))
+            [sablono.core         :refer-macros [html]]))
 
 (defui NumberItem
   static om/Ident
