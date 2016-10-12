@@ -3,7 +3,8 @@
             [sablono.core          :refer-macros [html]]
             [sample-routing.utils  :refer        [change-route]]
             [sample-routing.filter :refer        [filter-ui]]
-            [taoensso.timbre       :as           log]))
+            [taoensso.timbre       :as           log]
+            [compassus.core :as c]))
 
 (defui ColorItem
   static om/Ident
@@ -16,10 +17,18 @@
 
   Object
   (render [this]
-    (let [{:keys [color-id name]} (om/props this)]
-      (html [:tr
-             [:td color-id]
-             [:td name]]))))
+    (let [{:keys [color-id name]} (om/props this)
+          current-route (c/current-route this)]
+      (condp = current-route
+        :colors
+        (html [:tr
+               [:td color-id]
+               [:td name]])
+
+        :color/by-id
+        (html [:div
+               [:span "Color ID: " color-id "; "]
+               [:span "Name: " name]])))))
 
 (def color-item (om/factory ColorItem))
 
@@ -31,12 +40,11 @@
   static om/IQuery
   (query [this]
     `[:colors/title
-      ({:colors/list ~(om/get-query ColorItem)} {:color-id ?color-id})])
+      ({:colors/list ~(om/get-query ColorItem)} {:color-id ~'?color-id})])
 
   Object
   (render [this]
-    (let [{:keys [colors/title
-                  colors/list]} (om/props this)]
+    (let [{:keys [colors/title colors/list] :as props} (om/props this)]
       (html [:div
              [:h3 title]
              [:p "page of colors"]

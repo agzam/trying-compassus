@@ -12,20 +12,19 @@
 
   static om/IQuery
   (query [_]
-    '[:id :title])
+    '[:id :title :url])
 
   Object
   (componentWillReceiveProps [this next-props]
     (om/set-state! this {:active (-> this c/current-route name)}))
 
   (render [this]
-    (let [{:keys [title id]} (om/props this)
+    (let [{:keys [title id url]} (om/props this)
           active?            (= (or (-> this om/get-state :active)
                                     (-> this c/current-route name)) title)]
       (html [:li {:key      id
-                  :class    (if active? "active" "")
-                  :on-click #(c/set-route! this (keyword title)) }
-             [:div title]]))))
+                  :class    (if active? "active" "")}
+             [:a {:href url} title]]))))
 
 (def item (om/factory MenuItem))
 
@@ -44,4 +43,3 @@
              (factory props)]))))
 
 (def menu-wrapper (om/factory Menu))
-
