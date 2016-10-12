@@ -9,7 +9,10 @@
        :font-family      "Helvetica"
        :background-color "wheat"}
       [:ul {:list-style-type :none
-            :padding-left    0}])))
+            :padding-left    0}]
+      [:input {:line-height "18px"
+               :padding     "5px"}]
+      [:button {:height "30px"}])))
 
 (defstyles tables
   [:tbody

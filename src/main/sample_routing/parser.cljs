@@ -4,7 +4,6 @@
 
 (defmulti read om/dispatch)
 
-
 (defmethod read :default
   [{:keys [state query]} k params]
   (let [st @state]

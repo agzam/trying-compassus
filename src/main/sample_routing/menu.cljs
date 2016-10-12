@@ -22,7 +22,6 @@
     (let [{:keys [title id]} (om/props this)
           active?            (= (or (-> this om/get-state :active)
                                     (-> this c/current-route name)) title)]
-      (log/info (om/get-state this))
       (html [:li {:key      id
                   :class    (if active? "active" "")
                   :on-click #(c/set-route! this (keyword title)) }
