@@ -39,6 +39,8 @@
           {:keys [owner factory props]} (om/get-computed this)]
       (html [:div
              [:ul.menu (map item menu-items)]
-             (factory props)]))))
+             (factory props)
+             [:h1 "Footer"]
+             ]))))
 
 (def menu-wrapper (om/factory Menu))

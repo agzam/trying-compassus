@@ -2,7 +2,8 @@
   (:require [om.next :as om       :refer-macros [defui]]
             [sablono.core         :refer-macros [html]]
             [taoensso.timbre      :as log]
-            [pushy.core :as pushy]))
+            [compassus.core       :as c ]
+            [pushy.core           :as pushy]))
 
 (defui Filter
   Object
