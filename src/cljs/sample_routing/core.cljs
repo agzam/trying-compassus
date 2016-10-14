@@ -7,7 +7,8 @@
             [sample-routing.colors :as colors]
             [sample-routing.numbers :refer [Numbers]]
             [sample-routing.menu :refer [Menu]]
-            [sample-routing.parser :as parser]))
+            [sample-routing.parser :as parser]
+            [taoensso.timbre :as log]))
 
 (defonce app-state
   (atom {:menu-items [{:id 0 :title "colors" :url "/"}
@@ -55,6 +56,7 @@
         ["colors/" :id] :color/by-id}])
 
 (declare app)
+(declare send)
 
 (defonce history
   (pushy/pushy (fn [{:keys [handler route-params]}]
@@ -62,19 +64,21 @@
     (partial bidi/match-route bidi-routes)))
 
 (defonce app
-  (c/application {:routes {:colors (c/index-route colors/Colors)
-                           :numbers Numbers
-                           :color/by-id colors/ColorDetails}
-                  :reconciler-opts {:state app-state
-                                    :parser (om/parser {:read parser/read})
-                                    :shared {:history history}}
-                  :mixins [(c/wrap-render Menu)]
-                  :history {:setup    #(pushy/start! history)
-                            :teardown #(pushy/stop! history)}}))
+  (c/application {:routes          {:colors      (c/index-route colors/Colors)
+                                    :numbers     Numbers
+                                    :color/by-id colors/ColorDetails}
+                  :reconciler-opts {:state   app-state
+                                    :parser  (om/parser {:read parser/read})
+                                    :send    send
+                                    :remotes [:remote]
+                                    :shared  {:history history}}
+                  :mixins          [(c/wrap-render Menu)]
+                  :history         {:setup    #(pushy/start! history)
+                                    :teardown #(pushy/stop! history)}}))
 
 (defonce mounted? (atom false))
 
-(defn init! []
+(defn init []
   (enable-console-print!)
   (if-not @mounted?
     (do
@@ -83,3 +87,22 @@
     (let [route->component (-> app :config :route->component)
           c (om/class->any (c/get-reconciler app) (get route->component (c/current-route app)))]
       (.forceUpdate c))))
+
+(defn- send [query cb]
+  (let [xhr          (new js/XMLHttpRequest)
+        request-body (transit/write (transit/writer :json) query)]
+    (.open xhr "POST" "/data")
+    (.setRequestHeader xhr "Content-Type" "application/transit+json")
+    (.setRequestHeader xhr "Accept" "application/transit+json")
+    (.setRequestHeader xhr "Authorization" authorization-header)
+    (.addEventListener
+      xhr "load"
+      (fn [evt]
+        (let [status (.. evt -currentTarget -status)]
+          (case status
+            200 (let [response (transit/read (transit/reader :json)
+                                 (.. evt -currentTarget -responseText))]
+                  (cb response))
+            (js/alert (str "Error: Unexpected status code: " status
+                        ". Please screenshot and contact an engineer."))))))
+    (.send xhr request-body)))

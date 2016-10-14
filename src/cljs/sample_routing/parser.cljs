@@ -5,13 +5,15 @@
 (defmulti read om/dispatch)
 
 (defmethod read :default
-  [{:keys [state query]} k params]
+  [{:keys [state query ast]} k params]
   (let [st @state]
-    {:value (get st k)}))
+    {:value (get st k)
+     :remote ast}))
 
 (defmethod read :color/by-id
   [{:keys [state query]} k params]
   (let [{:keys [route-params] :as st} @state]
+    (log/spy query)
     {:value (->> (get-in st [:colors :colors/list])
               (filter #(= (str (:color-id %)) (:id route-params)))
               first)}))
