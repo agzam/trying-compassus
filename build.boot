@@ -61,8 +61,8 @@
     (cljs-repl)
     (reload :on-jsload 'sample-routing.core/init!)
     (speak)
-    (garden)
     (cljs)
+    (garden)
     (sift :move {#"dev.js" "main.js"})
     (target)))
 

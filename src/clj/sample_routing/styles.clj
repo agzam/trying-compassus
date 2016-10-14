@@ -24,8 +24,10 @@
    [:li {:display      :inline-block
          :margin-right "10px"
          :cursor       :pointer}]
-   [:li.active {:color         :red
-                :border-bottom ["1px solid black"]}]])
+   [:a {:text-decoration :none}]
+   [:li.active
+    [:a {:color         :red
+         :border-bottom ["1px solid black"]}]]])
 
 (defstyles combined
   base
