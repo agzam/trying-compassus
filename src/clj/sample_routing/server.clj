@@ -19,11 +19,42 @@
 (def transit #{"application/transit+msgpack"
               "application/transit+json;q=0.9"})
 
-(defn run-query-impl
-  [env k params]
-  (log/info "here should be the query"))
+(defmulti readf om/dispatch)
 
-(def om-parser (om/parser {:read run-query-impl}))
+(def om-parser (om/parser {:read readf}))
+
+(defmethod readf :colors
+  [_ k _]
+  {:value
+   {:colors/title "here will be colors"
+    :colors/list  [{:color-id 0 :name "red"
+                    :details  [{:id 0 :description "Red. Cras placerat accumsan nulla"}
+                               {:id 1 :description "Red. Donec vitae dolor"}
+                               {:id 2 :description "Red. Nullam rutrum"}]}
+                   {:color-id 1 :name "orange"
+                    :details  [{:id 0 :description "Orange. Cras placerat accumsan nulla"}
+                               {:id 1 :description "Orange. Donec vitae dolor"}
+                               {:id 2 :description "Orange. Nullam rutrum"}]}
+                   {:color-id 2 :name "yellow"
+                    :details  [{:id 0 :description "Yellow. Cras placerat accumsan nulla"}
+                               {:id 1 :description "Yellow. Donec vitae dolor"}
+                               {:id 2 :description "Yellow. Nullam rutrum"}]}
+                   {:color-id 3 :name "green"
+                    :details  [{:id 0 :description "Green. Cras placerat accumsan nulla"}
+                               {:id 1 :description "Green. Donec vitae dolor"}
+                               {:id 2 :description "Green. Nullam rutrum"}]}
+                   {:color-id 4 :name "blue"
+                    :details  [{:id 0 :description "Blue. Cras placerat accumsan nulla"}
+                               {:id 1 :description "Blue. Donec vitae dolor"}
+                               {:id 2 :description "Blue. Nullam rutrum"}]}
+                   {:color-id 5 :name "indigo"
+                    :details  [{:id 0 :description "Indigo. Cras placerat accumsan nulla"}
+                               {:id 1 :description "Indigo. Donec vitae dolor"}
+                               {:id 2 :description "Indigo. Nullam rutrum"}]}
+                   {:color-id 6 :name "violet"
+                    :details  [{:id 0 :description "Violet. Cras placerat accumsan nulla"}
+                               {:id 1 :description "Violet. Donec vitae dolor"}
+                               {:id 2 :description "Violet. Nullam rutrum"}]}]}})
 
 (defn log-request [handler]
   (fn [request]
@@ -38,7 +69,7 @@
                 :transit "application/transit+json; charset=UTF-8"
                 :font    "font/opentype"
                 :svg     "image/svg+xml"} ctype
-               (name ctype))]
+            (name ctype))]
     (resp/content-type cnt c)))
 
 (defn serve-index [_]
