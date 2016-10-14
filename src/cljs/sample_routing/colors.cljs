@@ -38,7 +38,7 @@
 
   static om/IQuery
   (query [_]
-    '[:color-id :name])
+    [:color-id :name])
 
   Object
   (render [this]

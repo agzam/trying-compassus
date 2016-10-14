@@ -41,7 +41,6 @@
     (.open xhr "POST" "/data")
     (.setRequestHeader xhr "Content-Type" "application/transit+json")
     (.setRequestHeader xhr "Accept" "application/transit+json")
-    (.setRequestHeader xhr "Authorization" authorization-header)
     (.addEventListener
       xhr "load"
       (fn [evt]

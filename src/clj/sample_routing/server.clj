@@ -23,10 +23,7 @@
 
 (def om-parser (om/parser {:read readf}))
 
-(defmethod readf :colors
-  [_ k _]
-  {:value
-   {:colors/title "here will be colors"
+(def colors-data {:colors/title "here will be colors"
     :colors/list  [{:color-id 0 :name "red"
                     :details  [{:id 0 :description "Red. Cras placerat accumsan nulla"}
                                {:id 1 :description "Red. Donec vitae dolor"}
@@ -54,7 +51,13 @@
                    {:color-id 6 :name "violet"
                     :details  [{:id 0 :description "Violet. Cras placerat accumsan nulla"}
                                {:id 1 :description "Violet. Donec vitae dolor"}
-                               {:id 2 :description "Violet. Nullam rutrum"}]}]}})
+                               {:id 2 :description "Violet. Nullam rutrum"}]}]})
+
+(defmethod readf :colors
+  [{:keys [query ast]} k params]
+  {:value 
+   {:colors/title "Foo"
+    :colors/list (map #(select-keys % [:color-id :name]) (:colors/list colors-data))}})
 
 (defn log-request [handler]
   (fn [request]

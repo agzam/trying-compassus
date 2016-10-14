@@ -91,6 +91,9 @@
         :cljs-opts {:parallel-build true}
         :exit? exit?))))
 
+(defn start []
+  (future (boot (dev))))
+
 (deftask auto-test []
   (comp
     (watch)
