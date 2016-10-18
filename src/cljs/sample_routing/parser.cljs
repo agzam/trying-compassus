@@ -1,22 +1,28 @@
 (ns sample-routing.parser
-  (:require [om.next              :as om]
-            [taoensso.timbre      :as log]))
+  (:require [om.next :as om]
+            [taoensso.timbre :as log]))
 
 (defmulti readf om/dispatch)
 
-(defmethod readf :default
-  [{:keys [state query ast]} k params]
+(defmethod readf :colors/list
+  [{:keys [target state query ast] :as env} k params]
   (let [st @state]
-    {:value (get st k)
+    (log/spy env)
+    {:value  (get st k)
      :remote ast}))
 
-(defmethod readf :color/by-id
-  [{:keys [state query]} k params]
+(defn set-ast-params [children params]
+  "traverses given vector of `children' in an AST and sets `params`"
+  (mapv
+    (fn [c]
+      (let [ks (clojure.set/intersection (-> params keys set) (-> c :params keys set))]
+        (update-in c [:params] #(merge % (select-keys params (vec ks))))))
+    children))
+
+(defmethod readf :colors/color
+  [{:keys [target state query ast parser] :as env} k params]
   (let [{:keys [route-params] :as st} @state]
-    (log/spy query)
-    {:value (->> (get-in st [:colors :colors/list])
-              (filter #(= (str (:color-id %)) (:id route-params)))
-              first)}))
+    {:remote ast})) 
 
 (defmethod readf :menu-items
   [{:keys [query state]} k _]

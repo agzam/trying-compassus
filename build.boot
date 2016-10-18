@@ -56,10 +56,10 @@
 
 (deftask dev []
   (comp
-    (serve)
+    (serve :reload true)
     (watch)
     (cljs-repl)
-    (reload :on-jsload 'sample-routing.core/init!)
+    (reload :on-jsload 'sample-routing.core/init)
     (speak)
     (cljs)
     (garden)

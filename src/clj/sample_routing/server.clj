@@ -13,6 +13,7 @@
             [bidi.ring :refer [make-handler]]
             [om.next.server :as om]
             [sample-routing.shared-data :as shared-data]
+            [prone.debug :refer [debug]]
             [sample-routing.pages :as pages])
   (:import [java.io ByteArrayOutputStream ByteArrayInputStream]))
 
@@ -23,45 +24,62 @@
 
 (def om-parser (om/parser {:read readf}))
 
-(def colors-data {:colors/title "here will be colors"
-    :colors/list  [{:color-id 0 :name "red"
-                    :details  [{:id 0 :description "Red. Cras placerat accumsan nulla"}
-                               {:id 1 :description "Red. Donec vitae dolor"}
-                               {:id 2 :description "Red. Nullam rutrum"}]}
-                   {:color-id 1 :name "orange"
-                    :details  [{:id 0 :description "Orange. Cras placerat accumsan nulla"}
-                               {:id 1 :description "Orange. Donec vitae dolor"}
-                               {:id 2 :description "Orange. Nullam rutrum"}]}
-                   {:color-id 2 :name "yellow"
-                    :details  [{:id 0 :description "Yellow. Cras placerat accumsan nulla"}
-                               {:id 1 :description "Yellow. Donec vitae dolor"}
-                               {:id 2 :description "Yellow. Nullam rutrum"}]}
-                   {:color-id 3 :name "green"
-                    :details  [{:id 0 :description "Green. Cras placerat accumsan nulla"}
-                               {:id 1 :description "Green. Donec vitae dolor"}
-                               {:id 2 :description "Green. Nullam rutrum"}]}
-                   {:color-id 4 :name "blue"
-                    :details  [{:id 0 :description "Blue. Cras placerat accumsan nulla"}
-                               {:id 1 :description "Blue. Donec vitae dolor"}
-                               {:id 2 :description "Blue. Nullam rutrum"}]}
-                   {:color-id 5 :name "indigo"
-                    :details  [{:id 0 :description "Indigo. Cras placerat accumsan nulla"}
-                               {:id 1 :description "Indigo. Donec vitae dolor"}
-                               {:id 2 :description "Indigo. Nullam rutrum"}]}
-                   {:color-id 6 :name "violet"
-                    :details  [{:id 0 :description "Violet. Cras placerat accumsan nulla"}
-                               {:id 1 :description "Violet. Donec vitae dolor"}
-                               {:id 2 :description "Violet. Nullam rutrum"}]}]})
+(def colors-data {:colors/title   "here will be colors"
+                  :colors/list    [{:color-id 0 :name "red"}
+                                   {:color-id 1 :name "orange"}
+                                   {:color-id 2 :name "yellow"}
+                                   {:color-id 3 :name "green"}
+                                   {:color-id 4 :name "blue"}
+                                   {:color-id 5 :name "indigo"}
+                                   {:color-id 6 :name "violet"}]
+                  :colors/details [{:id 0 :details [{ :id 0 :description "Red. Cras placerat accumsan nulla" :title "Red. 0"}
+                                                    { :id 1 :description "Red. Donec vitae dolor" :title "Red. 1"}
+                                                    { :id 2 :description "Red. Nullam rutrum" :title "Red. 2"}]}
+                                   {:id 1 :details [{ :id 0 :description "Orange. Cras placerat accumsan nulla" :title "Orange. 0"}
+                                                    { :id 1 :description "Orange. Donec vitae dolor" :title "Orange. 1"}
+                                                    { :id 2 :description "Orange. Nullam rutrum" :title "Orange. 2"}]}
+                                   {:id 2 :details [{ :id 0 :description "Yellow. Cras placerat accumsan nulla" :title "Yellow. 1"}
+                                                    { :id 1 :description "Yellow. Donec vitae dolor" :title "Yellow. 2"}
+                                                    { :id 2 :description "Yellow. Nullam rutrum" :title "Yellow. 3"}]}
+                                   {:id 3 :details [{ :id 0 :description "Green. Cras placerat accumsan nulla" :title "Green. 0"}
+                                                    { :id 1 :description "Green. Donec vitae dolor" :title "Green. 1"}
+                                                    { :id 2 :description "Green. Nullam rutrum" :title "Green. 2"}]}
+                                   {:id 4 :details [{ :id 0 :description "Blue. Cras placerat accumsan nulla" :title "Blue. 0"}
+                                                    { :id 1 :description "Blue. Donec vitae dolor" :title "Blue. 1"}
+                                                    { :id 2 :description "Blue. Nullam rutrum" :title "Blue. 2"}]}
+                                   {:id 5 :details [{ :id 0 :description "Indigo. Cras placerat accumsan nulla" :title "Indigo. 0"}
+                                                    { :id 1 :description "Indigo. Donec vitae dolor" :title "Indigo. 1"}
+                                                    { :id 2 :description "Indigo. Nullam rutrum" :title "Indigo. 2"}]}
+                                   {:id 6 :details [{ :id 0 :description "Violet. Cras placerat accumsan nulla" :title "Violet.. 0"}
+                                                    { :id 1 :description "Violet. Donec vitae dolor" :title "Violet.. 1"}
+                                                    { :id 2 :description "Violet. Nullam rutrum" :title "Violet.. 2"}]}]})
 
-(defmethod readf :colors
+(defmethod readf :colors/list
   [{:keys [query ast]} k params]
   {:value 
-   {:colors/title "Foo"
-    :colors/list (map #(select-keys % [:color-id :name]) (:colors/list colors-data))}})
+   {:colors/title (:colors/title colors-data)
+    :colors/list  (:colors/list colors-data)}})
+
+(defmethod readf :colors/header
+  [_ _ _]
+  (prn "colors/color yo!")
+  {:value {
+           :color-id "1"
+           :name "Yo-yo-yo"
+           }}
+  )
+;; (defmethod readf :default
+;;   [_ k params]
+;;   (debug params))
+
+;; (defmethod readf :color/by-id
+;;   [{:keys [parser query] :as env} k params]
+;;   (parser env query)
+;;   #_{:value {:color-id "100" :name "Yeahooo"}})
+
 
 (defn log-request [handler]
   (fn [request]
-      (log/info request)
     (handler request)))
 
 (defn content-type [cnt ctype]

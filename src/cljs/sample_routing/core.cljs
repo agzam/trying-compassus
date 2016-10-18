@@ -24,9 +24,9 @@
          :colors     nil}))
 
 (defonce bidi-routes
-  ["/" {""        :colors
+  ["/" {""        :colors/list
         "numbers" :numbers
-        ["colors/" :id] :color/by-id}])
+        ["colors/" :id] :colors/color}])
 
 (declare app)
 
@@ -35,7 +35,9 @@
                  (c/set-route! app handler {:params {:route-params route-params}}))
     (partial bidi/match-route bidi-routes)))
 
-(defn- send [{:keys [remote]} cb]
+(defn send [{:keys [remote]} cb]
+  (prn "send func!")
+  (log/spy remote)
   (let [xhr          (new js/XMLHttpRequest)
         request-body (transit/write (transit/writer :json) remote)]
     (.open xhr "POST" "/data")
@@ -54,14 +56,14 @@
     (.send xhr request-body)))
 
 (defonce app
-  (c/application {:routes          {:colors      (c/index-route colors/Colors)
+  (c/application {:routes          {:colors/list (c/index-route colors/Colors)
                                     :numbers     Numbers
-                                    :color/by-id colors/ColorDetails}
-                  :reconciler-opts {:state   app-state
-                                    :parser  (om/parser {:read parser/readf})
-                                    :send    send
-                                    ;; :remotes [:remote]
-                                    :shared  {:history history}}
+                                    :colors/color colors/ColorDetails}
+                  :reconciler-opts {:state  app-state
+                                    :parser (om/parser {:read parser/readf})
+                                    :send   send
+                                    :remotes [:remote]
+                                    :shared {:history history}}
                   :mixins          [(c/wrap-render Menu)]
                   :history         {:setup    #(pushy/start! history)
                                     :teardown #(pushy/stop! history)}}))

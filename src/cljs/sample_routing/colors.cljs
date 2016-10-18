@@ -5,31 +5,48 @@
             [taoensso.timbre       :as           log]
             [compassus.core :as c]))
 
-(defui ColorDetails
+(defui ColorDetailsItem
   static om/Ident
   (ident [_ {:keys [id]}]
-    [:color-item/by-id id])
-
-  static om/IQueryParams
-  (params [this]
-    {:color-id 0})
+    [:color-details-item/by-id id])
 
   static om/IQuery
-  (query [this]
-    `[({:colors [:colors/list [:name :id]]}
-       {:color-id ~'?color-id})])
+  (query [_]
+    [:id :description :title])
 
   Object
   (render [this]
-    (let [{:keys [details name color-id]} (om/props this)]
+    (let [{:keys [id description title]} (om/props this)]
+      (html [:tr {:style {:cursor "pointer"}}
+              [:td id]
+              [:td description]
+              [:td title]]))))
+
+(defui ColorDetails
+  ;; static om/Ident
+  ;; (ident [_ {:keys [id]}]
+  ;;   [:color-item/by-id id])
+
+  ;; static om/IQueryParams
+  ;; (params [this]
+  ;;   {:color-details-title ""
+  ;;    :color-id nil})
+
+  static om/IQuery
+  (query [this]
+    [{:color/header [:color-id :name]}]
+    ;; `[({:colors/header [:color-id :name]} {:color-id ~'?color-id})
+    ;;   ;; #_({:colors/details ~(om/get-query ColorDetailsItem)}
+    ;;   ;;  {:color-details-title ~'?color-details-title})
+    ;;   ]
+    )
+
+  Object
+  (render [this]
+    (let [props (om/props this)]
       (html [:div 
-             [:h1 name]
-             (filter-ui)
-             [:table [:tbody
-                      (map (fn [{:keys [description id]}]
-                             [:tr {:key id}
-                              [:td id]
-                              [:td description]]) details)]]]))))
+             [:label 
+              [:h1 (-> props :color/header :name)]]]))))
 
 (defui ColorItem
   static om/Ident
@@ -46,7 +63,7 @@
           current-route (c/current-route this)]
       (html [:tr
              {:style {:cursor "pointer"}
-              :on-click #(c/set-route! this :color/by-id {:params {:route-params {:id (str color-id)}}})}
+              :on-click #(c/set-route! this :colors/color {:params {:route-params {:color-id (str color-id)}}})}
              [:td color-id]
              [:td name] ]))))
 
@@ -61,7 +78,6 @@
   Object
   (render [this]
     (let [{:keys [colors/title colors/list] :as props} (om/props this)]
-      (log/spy props)
       (html [:div
              [:h3 title]
              [:p "page of colors"]
