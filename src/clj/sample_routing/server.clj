@@ -54,7 +54,7 @@
                                                     { :id 1 :description "Violet. Donec vitae dolor" :title "Violet.. 1"}
                                                     { :id 2 :description "Violet. Nullam rutrum" :title "Violet.. 2"}]}]})
 
-(defmethod readf :colors/list
+(defmethod readf :route.colors/list
   [{:keys [query ast]} k params]
   {:value 
    {:colors/title (:colors/title colors-data)

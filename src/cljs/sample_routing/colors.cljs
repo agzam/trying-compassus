@@ -63,7 +63,7 @@
           current-route (c/current-route this)]
       (html [:tr
              {:style {:cursor "pointer"}
-              :on-click #(c/set-route! this :colors/color {:params {:route-params {:color-id (str color-id)}}})}
+              :on-click #(c/set-route! this :route.colors/color {:params {:route-params {:color-id (str color-id)}}})}
              [:td color-id]
              [:td name] ]))))
 

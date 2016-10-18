@@ -24,9 +24,9 @@
          :colors     nil}))
 
 (defonce bidi-routes
-  ["/" {""        :colors/list
+  ["/" {""        :route.colors/list
         "numbers" :numbers
-        ["colors/" :id] :colors/color}])
+        ["colors/" :id] :route.colors/color}])
 
 (declare app)
 
@@ -56,9 +56,9 @@
     (.send xhr request-body)))
 
 (defonce app
-  (c/application {:routes          {:colors/list (c/index-route colors/Colors)
+  (c/application {:routes          {:route.colors/list colors/Colors
                                     :numbers     Numbers
-                                    :colors/color colors/ColorDetails}
+                                    :route.colors/color (c/index-route colors/ColorDetails)}
                   :reconciler-opts {:state  app-state
                                     :parser (om/parser {:read parser/readf})
                                     :send   send

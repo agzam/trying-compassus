@@ -4,10 +4,11 @@
 
 (defmulti readf om/dispatch)
 
-(defmethod readf :colors/list
-  [{:keys [target state query ast] :as env} k params]
+(defmethod readf :route.colors/list
+  [{:keys [target parser state query ast] :as env} k params]
   (let [st @state]
-    (log/spy env)
+    (log/spy k)
+    (log/spy target)
     {:value  (get st k)
      :remote ast}))
 
@@ -19,10 +20,13 @@
         (update-in c [:params] #(merge % (select-keys params (vec ks))))))
     children))
 
-(defmethod readf :colors/color
+(defmethod readf :route.colors/color
   [{:keys [target state query ast parser] :as env} k params]
+  (log/spy k)
+  (log/spy target)
   (let [{:keys [route-params] :as st} @state]
-    {:remote ast})) 
+    {:value (get k st) ;; TODO: parameterize ast with route-params
+     :remote ast}))
 
 (defmethod readf :menu-items
   [{:keys [query state]} k _]
