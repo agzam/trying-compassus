@@ -36,7 +36,7 @@
                  (c/set-route! app handler {:params {:route-params route-params}}))
     (partial bidi/match-route bidi-routes)))
 
-(defn send [{:keys [remote]} cb]
+(defn send [{:keys [remote] :as env} cb]
   (let [xhr          (new js/XMLHttpRequest)
         request-body (transit/write (transit/writer :json) remote)]
     (.open xhr "POST" "/data")

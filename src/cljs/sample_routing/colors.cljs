@@ -27,27 +27,30 @@
   (ident [_ {:keys [color-id]}]
     [:color-item/by-id color-id])
 
-  ;; static om/IQueryParams
-  ;; (params [this]
-  ;;   {:color-details-title ""
-  ;;    :color-id nil})
+  static om/IQueryParams
+  (params [this]
+    {
+     ;; :color-details-title ""
+     :color-id nil})
 
   static om/IQuery
   (query [this]
-    `[{:color/header [:color-id :name]}]
-    ;; `[({:colors/header [:color-id :name]} {:color-id ~'?color-id})
-    ;;   ;; #_({:colors/details ~(om/get-query ColorDetailsItem)}
-    ;;   ;;  {:color-details-title ~'?color-details-title})
-    ;;   ]
-    )
+    `[({:color/info
+        {:color/header [:color-id :name]
+         :color/details [:id :description :title]}} {:color-id ~'?color-id})])
 
   Object
   (render [this]
-    (let [props (om/props this)]
-      (log/spy props)
+    (let [{{:keys [color/header color/details]} :color/info} (om/props this)]
       (html [:div 
-             [:label 
-              [:h1 (-> props :color/header :name)]]]))))
+             [:h1 (:name header)]
+             [:table
+              [:tbody
+               (map
+                 (fn [{:keys [id description title]}]
+                   [:tr {:key id}
+                    [:td id] [:td description] [:td title]])
+                 details)]]]))))
 
 (defui ColorItem
   static om/Ident
@@ -64,7 +67,8 @@
           current-route (c/current-route this)]
       (html [:tr
              {:style {:cursor "pointer"}
-              :on-click #(c/set-route! this :route.colors/color {:params {:route-params {:color-id (str color-id)}}})}
+              :on-click #(c/set-route! this :route.colors/color {:queue? true
+                                                                 :params {:route-params {:color-id (str color-id)}}})}
              [:td color-id]
              [:td name] ]))))
 

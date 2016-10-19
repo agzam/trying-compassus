@@ -61,12 +61,23 @@
     :colors/list  (:colors/list colors-data)}})
 
 (defmethod readf :route.colors/color
-  [{:keys [query parser] :as env} _ _]
-  {:value {:color/header {:color-id 1 :name "Color name coming from server"}}})
+  [{:keys [query parser] :as env} _ params]
+  {:value (parser env query)})
 
-;; (defmethod readf :color/header
-;;   [_ _ _]
-;;   {:value {:color-id 1 :name "Yahowoowwowo"}})
+(defmethod readf :color/info
+  [{:keys [query parser] :as env} _ {:keys [color-id]}]
+  (let [id (clojure.edn/read-string color-id)]
+    {:value
+     {:color/header  (->> colors-data
+                       :colors/list
+                       (filter #(= (:color-id %) id))
+                       first)
+      :color/details (->> colors-data
+                       :colors/details
+                       (filter #(= (:id %) id))
+                       first
+                       :details)
+      }}))
 
 (defn log-request [handler]
   (fn [request]
