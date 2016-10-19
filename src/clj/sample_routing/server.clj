@@ -54,29 +54,19 @@
                                                     { :id 1 :description "Violet. Donec vitae dolor" :title "Violet.. 1"}
                                                     { :id 2 :description "Violet. Nullam rutrum" :title "Violet.. 2"}]}]})
 
-(defmethod readf :colors/list
+(defmethod readf :route.colors/list
   [{:keys [query ast]} k params]
   {:value 
    {:colors/title (:colors/title colors-data)
     :colors/list  (:colors/list colors-data)}})
 
-(defmethod readf :colors/header
-  [_ _ _]
-  (prn "colors/color yo!")
-  {:value {
-           :color-id "1"
-           :name "Yo-yo-yo"
-           }}
-  )
-;; (defmethod readf :default
-;;   [_ k params]
-;;   (debug params))
+(defmethod readf :route.colors/color
+  [{:keys [query parser] :as env} _ _]
+  {:value {:color/header {:color-id 1 :name "Color name coming from server"}}})
 
-;; (defmethod readf :color/by-id
-;;   [{:keys [parser query] :as env} k params]
-;;   (parser env query)
-;;   #_{:value {:color-id "100" :name "Yeahooo"}})
-
+;; (defmethod readf :color/header
+;;   [_ _ _]
+;;   {:value {:color-id 1 :name "Yahowoowwowo"}})
 
 (defn log-request [handler]
   (fn [request]

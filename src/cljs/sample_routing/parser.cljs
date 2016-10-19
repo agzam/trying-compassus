@@ -4,11 +4,18 @@
 
 (defmulti readf om/dispatch)
 
-(defmethod readf :colors/list
+(defmethod readf :route.colors/list
   [{:keys [target state query ast] :as env} k params]
   (let [st @state]
-    (log/spy env)
     {:value  (get st k)
+     :remote ast}))
+
+(defmethod readf :route.colors/color
+  [{:keys [parser target state query ast] :as env} k params]
+  (let [st @state]
+    #_{:value {:color/header {:color-id 1 :name "local name"}}}
+    (log/spy st)
+    {:value (get st k)
      :remote ast}))
 
 (defn set-ast-params [children params]
