@@ -64,9 +64,14 @@
   Object
   (render [this]
     (let [{:keys [color-id name]} (om/props this)
-          current-route (c/current-route this)]
+          current-route (c/current-route this)
+          {:keys [selected?]} (om/get-state this)]
       (html [:tr
-             {:style {:cursor "pointer"}
+             {:style {:cursor "pointer" :background (if selected? "orange" "wheat")}
+              ;; This is a trivial example that of course should be done purely in CSS
+              ;; I just needed a basic case to demonstrate that local state works 
+              :on-mouse-enter #(om/set-state! this {:selected? true})
+              :on-mouse-leave #(om/set-state! this {:selected? false})
               :on-click #(c/set-route! this :route.colors/color {:queue? true
                                                                  :params {:route-params {:color-id (str color-id)}}})}
              [:td color-id]
