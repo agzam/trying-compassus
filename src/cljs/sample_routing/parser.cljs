@@ -32,3 +32,9 @@
   [{:keys [query state]} k _]
   (let [st @state]
     {:value (om/db->tree query (get st k) st)}))
+
+(defmethod readf :route.numbers
+  [{:keys [state]} k _]
+  (let [st @state]
+    {:value (get st k)
+     :remote true}))

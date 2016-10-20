@@ -1,6 +1,7 @@
 (ns sample-routing.numbers
-  (:require [om.next              :as           om :refer-macros [defui]]
-            [sablono.core         :refer-macros [html]]))
+  (:require [compassus.core :as c]
+            [om.next :as om :refer-macros [defui]]
+            [sablono.core :refer-macros [html]]))
 
 (defui NumberItem
   static om/Ident
@@ -17,7 +18,6 @@
       (html [:tr
              [:td number-id]
              [:td value]]))))
-
 
 (def number-item (om/factory NumberItem))
 
@@ -36,5 +36,5 @@
              [:table
               [:tbody
                (map #(number-item %) list)]]
-             [:a {:href "/"}
+             [:div {:on-click (fn [e] (c/set-route! this :route.colors/list))}
               "Go to colors page"]]))))

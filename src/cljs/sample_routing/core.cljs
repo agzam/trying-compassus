@@ -12,17 +12,8 @@
             [taoensso.timbre :as log]))
 
 (defonce app-state
-  (atom {:menu-items [{:id 0 :title "colors" :url "/"}
-                      {:id 1 :title "numbers" :url "/numbers"}]
-         ;; :numbers    nil #_{:numbers/title "numbers are here!"
-         ;;              :numbers/list  [{:number-id 0 :value "afb5f6da-3d8e-49ef-993d-95e55f186fd3"}
-         ;;                              {:number-id 1 :value "bc47140c-89ad-4832-a3d7-b22a6aafde6c"}
-         ;;                              {:number-id 2 :value "d5d88770-f477-4cec-9b8e-6c9ddf5ce2b7"}
-         ;;                              {:number-id 3 :value "478d9320-a1b2-459e-95f5-4bb963fdad1c"}
-         ;;                              {:number-id 4 :value "d8bf7561-b9b6-4be7-a5d6-a05f8c86973f"}
-         ;;                              {:number-id 5 :value "d8bf7561-b9b6-4be7-a5d6-a05f8c86973f"}]}
-         ;; :colors     nil
-         }))
+  (atom {:menu-items [{:id 0 :title "colors" :route :route.colors/list}
+                      {:id 1 :title "numbers" :route :route.numbers}]}))
 
 (defonce bidi-routes
   ["/" {""        :colors/list
@@ -54,7 +45,7 @@
                         ". Please screenshot and contact an engineer."))))))
     (.send xhr request-body)))
 
-(defn merge-fn 
+(defn merge-fn
   "https://github.com/omcljs/om/wiki/Documentation-(om.next)#reconciler-1"
   [reconciler state novelty query]
   {:next (merge state novelty)})
@@ -85,5 +76,3 @@
     (let [route->component (-> app :config :route->component)
           c                (om/class->any (c/get-reconciler app) (get route->component (c/current-route app)))]
       (when c (.forceUpdate c)))))
-
-
