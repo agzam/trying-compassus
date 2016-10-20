@@ -1,5 +1,6 @@
 (ns sample-routing.server
   (:require [clojure.data.json :as json]
+            [clojure.string :as str]
             [ring.middleware.content-type :refer [wrap-content-type]]
             [ring.middleware.defaults :refer [api-defaults wrap-defaults]]
             [ring.middleware.format :as fmt]
@@ -65,7 +66,7 @@
   {:value (parser env query)})
 
 (defmethod readf :color/info
-  [{:keys [query parser] :as env} _ {:keys [color-id]}]
+  [{:keys [query parser] :as env} _ {:keys [color-id color-desc]}]
   (let [id (clojure.edn/read-string color-id)]
     {:value
      {:color/header  (->> colors-data
@@ -76,8 +77,12 @@
                        :colors/details
                        (filter #(= (:id %) id))
                        first
-                       :details)
-      }}))
+                       :details
+                       (filter #(if (empty? color-desc)
+                                  true
+                                  (str/includes?
+                                    (-> % :description str/lower-case)
+                                    (-> color-desc str str/lower-case)))))}}))
 
 (defmethod readf :route.numbers
   [_ _ _]

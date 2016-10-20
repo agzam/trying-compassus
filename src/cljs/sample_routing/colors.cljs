@@ -30,22 +30,26 @@
   static om/IQueryParams
   (params [this]
     {
-     ;; :color-details-title ""
+     :color-desc nil
      :color-id nil})
 
   static om/IQuery
   (query [this]
     `[({:color/info
         {:color/header [:color-id :name]
-         :color/details [:id :description :title]}} {:color-id ~'?color-id})])
+         :color/details [:id :description :title]}} {:color-id ~'?color-id
+                                                     :color-desc ~'?color-desc})])
 
   Object
   (render [this]
     (let [{{:keys [color/header color/details]} :color/info} (om/props this)]
       (html [:div 
              [:h1 (:name header)]
+             [:label "description filter:"
+              (filter-ui)]
              [:table
               [:tbody
+               [:tr [:th "id"][:th "description"][:th "title"]]
                (map
                  (fn [{:keys [id description title]}]
                    [:tr {:key id}
@@ -75,9 +79,9 @@
               :on-click #(c/set-route! this :route.colors/color {:queue? true
                                                                  :params {:route-params {:color-id (str color-id)}}})}
              [:td color-id]
-             [:td name] ]))))
+             [:td name]]))))
 
-(def color-item (om/factory ColorItem))
+(def color-item-ui (om/factory ColorItem))
 
 (defui Colors
   static om/IQuery
@@ -94,4 +98,4 @@
              [:br]
              [:table
               [:tbody
-               (map #(color-item %) list)]]]))))
+               (map #(color-item-ui %) list)]]]))))

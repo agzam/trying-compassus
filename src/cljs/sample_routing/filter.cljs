@@ -1,9 +1,9 @@
 (ns sample-routing.filter
-  (:require [om.next :as om       :refer-macros [defui]]
-            [sablono.core         :refer-macros [html]]
-            [taoensso.timbre      :as log]
-            [compassus.core       :as c ]
-            [pushy.core           :as pushy]))
+  (:require [om.next :as om :refer-macros [defui]]
+            [sablono.core :refer-macros [html]]
+            [taoensso.timbre :as log]
+            [compassus.core :as c]
+            [pushy.core :as pushy]))
 
 (defui Filter
   Object
@@ -15,9 +15,12 @@
                     :on-change #(om/set-state! this {:input (.. % -target -value)})
                     :value (om/get-state this :input)}]
            [:button {:on-click (fn [e]
-                                 (let [{:keys [history]} (om/shared this)]
-                                   (.preventDefault e)
-                                   (pushy/set-token! history (str "/colors/" (om/get-state this :input)))))}
+                                 (.preventDefault e)
+                                 (om/transact! this
+                                   `[(~'set-filter!
+                                      {:key :color-desc
+                                       :value ~(-> this om/get-state :input)
+                                       :component ~this})]))}
             "Apply"]])))
 
 (def filter-ui (om/factory Filter))

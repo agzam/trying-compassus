@@ -1,8 +1,10 @@
 (ns sample-routing.parser
   (:require [om.next :as om]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [compassus.core :as c]))
 
 (defmulti readf om/dispatch)
+(defmulti mutate om/dispatch)
 
 (defn set-ast-params [children params]
   "traverses given vector of `children' in an AST and sets `params`"
@@ -38,3 +40,11 @@
   (let [st @state]
     {:value (get st k)
      :remote true}))
+
+(defmethod mutate 'set-filter!
+  [{:keys [state]} _ {:keys [key value component]}]
+  (let [{:keys [route-params]} @state]
+    {:action (fn []
+               (c/set-route! component (c/current-route component)
+                 {:queue? true
+                  :params {:route-params (assoc route-params key value)}}))}))

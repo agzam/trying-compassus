@@ -55,7 +55,7 @@
                                     :route.numbers            Numbers
                                     :route.colors/color colors/ColorDetails}
                   :reconciler-opts {:state   app-state
-                                    :parser  (om/parser {:read parser/readf})
+                                    :parser  (om/parser {:read parser/readf :mutate parser/mutate})
                                     :send    send
                                     :merge   merge-fn
                                     :remotes [:remote]
