@@ -9,7 +9,8 @@
             [sample-routing.menu :refer [Menu]]
             [sample-routing.parser :as parser]
             [cognitect.transit :as transit]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [dirac.runtime]))
 
 (defonce app-state
   (atom {:menu-items [{:id 0 :title "colors" :route :route.colors/list}
@@ -68,6 +69,7 @@
 (defonce mounted? (atom false))
 
 (defn init []
+  (dirac.runtime/install!)
   (enable-console-print!)
   (if-not @mounted?
     (do

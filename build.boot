@@ -23,18 +23,20 @@
                  [com.cemerick/url              "0.1.2-SNAPSHOT"]
                  [hiccup                        "1.0.5"          :exclusions [cljsjs/react]]
                  
-                 [org.slf4j/slf4j-nop           "1.7.13"         :scope      "test"]
-                 [com.cognitect/transit-clj     "0.8.288"        :scope      "test"]
-                 [com.cemerick/piggieback       "0.2.1"          :scope      "test"]
-                 [adzerk/boot-cljs              "1.7.228-1"      :scope      "test"]
-                 [adzerk/boot-cljs-repl         "0.3.3"          :scope      "test"]
-                 [adzerk/boot-reload            "0.4.12"         :scope      "test"]
-                 [crisptrutski/boot-cljs-test   "0.2.2-SNAPSHOT" :scope      "test"]
-                 [org.slf4j/slf4j-nop           "1.7.21"         :scope      "test"]
-                 [org.clojure/tools.nrepl       "0.2.12"         :scope      "test"]
-                 [pandeiro/boot-http            "0.7.3"          :scope      "test"]
-                 [weasel                        "0.7.0"          :scope      "test"]
-                 [binaryage/devtools            "0.8.2"           :scope      "test"]])
+                 [org.slf4j/slf4j-nop           "1.7.13"         :scope "test"]
+                 [com.cognitect/transit-clj     "0.8.288"        :scope "test"]
+                 [com.cemerick/piggieback       "0.2.1"          :scope "test"]
+                 [adzerk/boot-cljs              "1.7.228-1"      :scope "test"]
+                 [adzerk/boot-cljs-repl         "0.3.3"          :scope "test"]
+                 [adzerk/boot-reload            "0.4.12"         :scope "test"]
+                 [crisptrutski/boot-cljs-test   "0.2.2-SNAPSHOT" :scope "test"]
+                 [org.slf4j/slf4j-nop           "1.7.21"         :scope "test"]
+                 [org.clojure/tools.nrepl       "0.2.12"         :scope "test"]
+                 [pandeiro/boot-http            "0.7.3"          :scope "test"]
+                 [weasel                        "0.7.0"          :scope "test"]
+                 [binaryage/devtools            "0.8.2"          :scope "test"]
+                 [binaryage/dirac               "0.7.2"          :scope "test"]
+                 [powerlaces/boot-cljs-devtools "0.1.2"          :scope "test"]])
 
 (require
  '[adzerk.boot-cljs              :refer [cljs]]
@@ -42,7 +44,8 @@
  '[adzerk.boot-reload            :refer [reload]]
  '[crisptrutski.boot-cljs-test   :refer [test-cljs]]
  '[pandeiro.boot-http            :refer [serve]]
- '[org.martinklepsch.boot-garden :refer [garden]])
+ '[org.martinklepsch.boot-garden :refer [garden]]
+ '[powerlaces.boot-cljs-devtools :refer [cljs-devtools]])
 
 (task-options!
   garden {:styles-var   'sample-routing.styles/combined
@@ -58,6 +61,7 @@
   (comp
     (serve :reload true)
     (watch)
+    (cljs-devtools)
     (cljs-repl)
     (reload :on-jsload 'sample-routing.core/init)
     (speak)
