@@ -23,14 +23,9 @@
               [:td title]]))))
 
 (defui ColorDetails
-  static om/Ident
-  (ident [_ {:keys [color-id]}]
-    [:color-item/by-id color-id])
-
   static om/IQueryParams
   (params [this]
-    {
-     :color-desc nil
+    {:color-desc nil
      :color-id nil})
 
   static om/IQuery
@@ -58,8 +53,8 @@
 
 (defui ColorItem
   static om/Ident
-  (ident [_ {:keys [id]}]
-    [:color-item/by-id id])
+  (ident [_ {:keys [color-id]}]
+    [:color-item/by-id color-id])
 
   static om/IQuery
   (query [_]

@@ -3,8 +3,8 @@
  :resource-paths  #{"resources"}
  :dependencies '[[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript     "1.9.229"]
-                 [org.omcljs/om                 "1.0.0-alpha46"]
-                 [compassus                     "0.3.0-SNAPSHOT"]
+                 [org.omcljs/om                 "1.0.0-alpha47"]
+                 [compassus                     "1.0.0-alpha1"]
                  [kibu/pushy                    "0.3.6"]
                  [sablono                       "0.7.5"]
                  [com.taoensso/timbre           "4.7.4"]

@@ -5,8 +5,8 @@
 
 (defui NumberItem
   static om/Ident
-  (ident [_ {:keys [id]}]
-    [:number-item/by-id id])
+  (ident [_ {:keys [number-id]}]
+    [:number-item/by-id number-id])
 
   static om/IQuery
   (query [_]

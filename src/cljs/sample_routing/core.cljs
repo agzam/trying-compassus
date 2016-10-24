@@ -52,16 +52,20 @@
   {:next (merge state novelty)})
 
 (defonce app
-  (c/application {:routes          {:route.colors/list  (c/index-route colors/Colors)
-                                    :route.numbers            Numbers
+  (c/application {:routes          {:route.colors/list  colors/Colors
+                                    :route.numbers      Numbers
                                     :route.colors/color colors/ColorDetails}
-                  :reconciler-opts {:state   app-state
-                                    :parser  (om/parser {:read parser/readf :mutate parser/mutate})
-                                    :send    send
-                                    :merge   merge-fn
-                                    :remotes [:remote]
-                                    :shared  {:history history}}
+                  :index-route     :route.colors/list
+                  :reconciler (om/reconciler
+                                {:state   app-state
+                                 :parser  (c/parser {:read parser/readf :mutate parser/mutate})
+                                 :send    send
+                                 :merge   merge-fn
+                                 :remotes [:remote]
+                                 ;; :shared  {:history history}
+                                 })
                   :mixins          [(c/wrap-render Menu)]
+                  
                   ;; :history         {:setup    #(pushy/start! history)
                   ;;                   :teardown #(pushy/stop! history)}
                   }))
