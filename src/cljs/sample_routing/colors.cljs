@@ -1,7 +1,7 @@
 (ns sample-routing.colors
   (:require [om.next               :as           om :refer-macros [defui]]
             [sablono.core          :refer-macros [html]]
-            [sample-routing.filter :refer        [filter-ui]]
+            [sample-routing.filter :refer        [make-filter]]
             [taoensso.timbre       :as           log]
             [compassus.core :as c]))
 
@@ -41,7 +41,7 @@
       (html [:div 
              [:h1 (:name header)]
              [:label "description filter:"
-              (filter-ui)]
+              (make-filter :color-desc)]
              [:table
               [:tbody
                [:tr [:th "id"][:th "description"][:th "title"]]
