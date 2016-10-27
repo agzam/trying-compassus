@@ -1,3 +1,2 @@
-{:require [sample-routing.core]
- :init-fns [sample-routing.core/init!]
- :compiler-options {:asset-path "js/dev.out"}}
+{:require          [sample-routing.core]
+ :init-fns         [sample-routing.core/init]}

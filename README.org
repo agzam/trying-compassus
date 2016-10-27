@@ -1,0 +1,16 @@
+* Simple experiment with Compassus 
+
+** Overview
+
+Compassus is a routing library used with Om.Next
+
+** Setup
+
+This project uses boot-clj as its build tool. Run
+the following to run the application in development mode:
+
+#+BEGIN_SRC bash
+  boot dev
+#+END_SRC
+
+Point your browser to ~localhost:3000~ 
