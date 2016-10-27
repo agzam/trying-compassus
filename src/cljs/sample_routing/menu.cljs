@@ -1,8 +1,8 @@
 (ns sample-routing.menu
-  (:require [om.next :as om :refer-macros [defui]]
+  (:require [compassus.core :as c]
+            [om.next :as om :refer-macros [defui]]
             [sablono.core :refer-macros [html]]
-            [taoensso.timbre :as log]
-            [compassus.core :as c]))
+            [taoensso.timbre :as log]))
 
 (defui MenuItem
   static om/Ident
@@ -11,20 +11,19 @@
 
   static om/IQuery
   (query [_]
-    '[:id :title :route])
+    '[:id :title :route :url])
 
   Object
   (componentWillReceiveProps [this next-props]
     (om/set-state! this {:active (-> this c/current-route name)}))
 
   (render [this]
-    (let [{:keys [title id route]} (om/props this)
+    (let [{:keys [title id route url]} (om/props this)
           active?            (= (or (-> this om/get-state :active)
                                     (-> this c/current-route name)) title)]
       (html [:li {:key      id
                   :class    (if active? "active" "")}
-             [:div {:on-click (fn [e] (c/set-route! this route))}
-              title]]))))
+             [:a {:href url} title]]))))
 
 (def item (om/factory MenuItem))
 

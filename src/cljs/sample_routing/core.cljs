@@ -1,17 +1,19 @@
 (ns sample-routing.core
-  (:require [om.next :as om :refer-macros [defui]]
-            [om.dom :as dom]
-            [compassus.core :as c]
-            [sample-routing.colors :as colors]
-            [sample-routing.numbers :refer [Numbers]]
-            [sample-routing.menu :refer [Menu]]
-            [sample-routing.parser :as parser]
+  (:require [bidi.bidi :as bidi]
             [cognitect.transit :as transit]
+            [compassus.core :as c]
+            [om.dom :as dom]
+            [om.next :as om :refer-macros [defui]]
+            [pushy.core :as pushy]
+            [sample-routing.colors :as colors]
+            [sample-routing.menu :refer [Menu]]
+            [sample-routing.numbers :refer [Numbers]]
+            [sample-routing.parser :as parser]
             [taoensso.timbre :as log]))
 
 (defonce app-state
-  (atom {:menu-items [{:id 0 :title "colors" :route :route.colors/list}
-                      {:id 1 :title "numbers" :route :route.numbers}]}))
+  (atom {:menu-items [{:id 0 :title "colors" :route :route.colors/list :url "/colors"}
+                      {:id 1 :title "numbers" :route :route.numbers :url "/numbers"}]}))
 
 (declare app)
 
@@ -38,6 +40,18 @@
   [reconciler state novelty query]
   {:next (merge state novelty)})
 
+(defonce  bidi-routes
+  ["/" {"colors"        :route.colors/list
+        "numbers"       :route.numbers 
+        ["color/" :color-id] :route.colors/color}])
+
+(def history
+  (pushy/pushy (fn [{:keys [handler route-params] :as r}]
+                 (c/set-route! app handler
+                   (when route-params
+                     {:params {:route-params route-params}})))
+    (partial bidi/match-route bidi-routes)))
+
 (defonce app
   (c/application {:routes      {:route.colors/list  colors/Colors
                                 :route.numbers      Numbers
@@ -49,12 +63,10 @@
                                   :send    send
                                   :merge   merge-fn
                                   :remotes [:remote]
-                                  ;; :shared  {:history history}
-                                  })
-                  :mixins      [(c/wrap-render Menu)]
-                  ;; :history         {:setup    #(pushy/start! history)
-                  ;;                   :teardown #(pushy/stop! history)}
-                  }))
+                                  :shared  {:history history}})
+                  :mixins      [(c/wrap-render Menu)
+                                (c/did-mount (fn [_] (pushy/start! history)))
+                                (c/will-unmount (fn [_] (pushy/stop! history)))]}))
 
 (defonce mounted? (atom false))
 

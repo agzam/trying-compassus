@@ -70,11 +70,10 @@
               ;; This is a trivial example that of course should be done purely in CSS
               ;; I just needed a basic case to demonstrate that local state works 
               :on-mouse-enter #(om/set-state! this {:selected? true})
-              :on-mouse-leave #(om/set-state! this {:selected? false})
-              :on-click #(c/set-route! this :route.colors/color {:queue? true
-                                                                 :params {:route-params {:color-id (str color-id)}}})}
+              :on-mouse-leave #(om/set-state! this {:selected? false})}
              [:td color-id]
-             [:td name]]))))
+             [:td
+              [:a {:href (str "/color/" color-id)} name]]]))))
 
 (def color-item-ui (om/factory ColorItem))
 
