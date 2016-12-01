@@ -1,15 +1,14 @@
 (ns sample-routing.core
-  (:require [bidi.bidi :as bidi]
-            [cognitect.transit :as transit]
-            [compassus.core :as c]
-            [om.dom :as dom]
-            [om.next :as om :refer-macros [defui]]
-            [pushy.core :as pushy]
-            [sample-routing.colors :as colors]
-            [sample-routing.menu :refer [Menu]]
-            [sample-routing.numbers :refer [Numbers]]
-            [sample-routing.parser :as parser]
-            [taoensso.timbre :as log]))
+  (:require
+   [bidi.bidi :as bidi]
+   [cognitect.transit :as transit]
+   [compassus.core :as c]
+   [om.next :as om]
+   [pushy.core :as pushy]
+   [sample-routing.colors :as colors]
+   [sample-routing.menu :refer [Menu]]
+   [sample-routing.numbers :refer [Numbers]]
+   [sample-routing.parser :as parser]))
 
 (defonce app-state
   (atom {:menu-items [{:id 0 :title "colors" :route :route.colors/list :url "/colors"}
@@ -53,9 +52,9 @@
     (partial bidi/match-route bidi-routes)))
 
 (defonce app
-  (c/application {:routes      {:route.colors/list  colors/Colors
-                                :route.numbers      Numbers
-                                :route.colors/color colors/ColorDetails}
+  (c/application {:routes {:route.colors/list colors/Colors
+                          :route.numbers Numbers
+                          :route.colors/color colors/ColorDetails}
                   :index-route :route.colors/list
                   :reconciler  (om/reconciler
                                  {:state   app-state
@@ -77,5 +76,5 @@
       (c/mount! app (js/document.getElementById "app"))
       (swap! mounted? not))
     (let [route->component (-> app :config :route->component)
-          c                (om/class->any (c/get-reconciler app) (get route->component (c/current-route app)))]
+          c (om/class->any (c/get-reconciler app) (get route->component (c/current-route app)))]
       (when c (.forceUpdate c)))))

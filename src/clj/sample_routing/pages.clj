@@ -1,6 +1,7 @@
 (ns sample-routing.pages
-  (:require [hiccup.core :refer [html]]
-            [cheshire.core :as json]))
+  (:require
+   [hiccup.core :refer [html]]
+   [cheshire.core :as json]))
 
 (defn header []
   [:title "Sample routing using Compassus"]

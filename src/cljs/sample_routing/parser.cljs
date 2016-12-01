@@ -1,7 +1,7 @@
 (ns sample-routing.parser
-  (:require [om.next :as om]
-            [taoensso.timbre :as log]
-            [compassus.core :as c]))
+  (:require
+   [om.next :as om]
+   [compassus.core :as c]))
 
 (defmulti readf om/dispatch)
 (defmulti mutate om/dispatch)
